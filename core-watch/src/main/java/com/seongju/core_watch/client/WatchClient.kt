@@ -7,4 +7,6 @@ interface WatchClient {
 
     fun findNode(): Flow<ClientResult>
 
+    fun sendData(data: Int): Flow<ClientResult>
+
 }

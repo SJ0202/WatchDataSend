@@ -9,9 +9,11 @@ import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import com.seongju.core_watch.common.result.ClientResult
+import com.seongju.core_watch.util.intToByteArray
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class WatchClientImpl(
@@ -57,6 +59,31 @@ class WatchClientImpl(
 
             awaitClose {
                 capabilityClient.removeListener(capabilityCallback)
+            }
+        }
+    }
+
+    override fun sendData(data: Int): Flow<ClientResult> {
+        return flow {
+            val byteArray = intToByteArray(data)
+
+            if (transcriptionNodeId != null) {
+                Log.d(TAG, "send data")
+
+                messageClient.sendMessage(
+                    transcriptionNodeId!!,
+                    DATA_PATH,
+                    byteArray
+                ).apply {
+                    addOnSuccessListener {
+                        Log.d(TAG, "Send Success")
+                    }
+                    addOnFailureListener {
+                        Log.d(TAG, "Send Fail")
+                    }
+                }
+            } else {
+                Log.d(TAG, "Send Fail. transcriptionNodeId null")
             }
         }
     }
