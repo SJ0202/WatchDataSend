@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "WatchDataSend"
 include(":app")
- 
+include(":app-watch")
